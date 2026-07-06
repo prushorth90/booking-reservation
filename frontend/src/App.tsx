@@ -1,122 +1,258 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+import {
+  AppBar,
+  Box,
+  Button,
+  Card,
+  CardContent,
+  Chip,
+  Container,
+  MenuItem,
+  TextField,
+  Toolbar,
+  Typography,
+} from "@mui/material";
+
+import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import HotelIcon from "@mui/icons-material/Hotel";
+import SearchIcon from "@mui/icons-material/Search";
+import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.tsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
+    <Box sx={{ minHeight: "100vh", bgcolor: "#f7f8fc" }}>
+      <AppBar
+        position="static"
+        elevation={0}
+        sx={{
+          bgcolor: "white",
+          color: "#172033",
+          borderBottom: "1px solid #e8eaf0",
+        }}
+      >
+        <Toolbar
+          sx={{
+            justifyContent: "space-between",
+            px: { xs: 2, md: 6 },
+          }}
         >
-          Count is {count}
-        </button>
-      </section>
+          <Typography
+            variant="h5"
+            sx={{ fontWeight: 900, color: "primary.main" }}
+          >
+            ReserveNow
+          </Typography>
 
-      <div className="ticks"></div>
+          <Box
+            sx={{
+              display: { xs: "none", md: "flex" },
+              gap: 2,
+            }}
+          >
+            <Button color="inherit">Features</Button>
+            <Button color="inherit">Bookings</Button>
+            <Button color="inherit">Admin</Button>
+          </Box>
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
+          <Button variant="contained">Get Started</Button>
+        </Toolbar>
+      </AppBar>
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+      <Container maxWidth="lg">
+        <Box
+          sx={{
+            py: { xs: 6, md: 10 },
+            display: "grid",
+            gridTemplateColumns: { xs: "1fr", md: "7fr 5fr" },
+            gap: 6,
+            alignItems: "center",
+          }}
+        >
+          <Box>
+            <Chip
+              icon={<CheckCircleIcon />}
+              label="Spring Boot + React booking app"
+              color="primary"
+              variant="outlined"
+              sx={{ mb: 3 }}
+            />
+
+            <Typography
+              variant="h2"
+              sx={{
+                fontWeight: 900,
+                fontSize: { xs: "2.4rem", md: "4rem" },
+                lineHeight: 1.05,
+                mb: 3,
+              }}
+            >
+              Book rooms, tables, and appointments in seconds.
+            </Typography>
+
+            <Typography
+              variant="h6"
+              sx={{
+                color: "text.secondary",
+                mb: 4,
+                maxWidth: 650,
+              }}
+            >
+              A full-stack reservation platform built with React, TypeScript,
+              Material UI, Java Spring Boot, and PostgreSQL.
+            </Typography>
+
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: { xs: "column", sm: "row" },
+                gap: 2,
+              }}
+            >
+              <Button size="large" variant="contained" startIcon={<SearchIcon />}>
+                Search Availability
+              </Button>
+
+              <Button size="large" variant="outlined">
+                View Demo
+              </Button>
+            </Box>
+          </Box>
+
+          <Card
+            sx={{
+              borderRadius: 4,
+              boxShadow: "0 20px 50px rgba(20,32,60,0.12)",
+            }}
+          >
+            <CardContent sx={{ p: 4 }}>
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 1,
+                  mb: 3,
+                }}
+              >
+                <CalendarMonthIcon color="primary" />
+
+                <Typography variant="h5" sx={{ fontWeight: 800 }}>
+                  Find Availability
+                </Typography>
+              </Box>
+
+              <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+                <TextField
+                  select
+                  label="Reservation Type"
+                  defaultValue="hotel"
+                  fullWidth
+                >
+                  <MenuItem value="hotel">Hotel Room</MenuItem>
+                  <MenuItem value="restaurant">Restaurant Table</MenuItem>
+                  <MenuItem value="appointment">Appointment</MenuItem>
+                </TextField>
+
+                <TextField label="Location" defaultValue="Seattle, WA" fullWidth />
+
+                <Box
+                  sx={{
+                    display: "grid",
+                    gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr" },
+                    gap: 2,
+                  }}
+                >
+                  <TextField
+                    label="Start Date"
+                    type="date"
+                    defaultValue="2026-07-20"
+                    fullWidth
+                    slotProps={{
+                      inputLabel: {
+                        shrink: true,
+                      },
+                    }}
+                  />
+
+                  <TextField
+                    label="End Date"
+                    type="date"
+                    defaultValue="2026-07-23"
+                    fullWidth
+                    slotProps={{
+                      inputLabel: {
+                        shrink: true,
+                      },
+                    }}
+                  />
+                </Box>
+
+                <Button size="large" variant="contained" fullWidth>
+                  Search
+                </Button>
+              </Box>
+            </CardContent>
+          </Card>
+        </Box>
+
+        <Box
+          sx={{
+            pb: 8,
+            display: "grid",
+            gridTemplateColumns: { xs: "1fr", md: "repeat(3, 1fr)" },
+            gap: 3,
+          }}
+        >
+          <Card sx={{ height: "100%", borderRadius: 3 }}>
+            <CardContent sx={{ p: 3 }}>
+              <HotelIcon color="primary" sx={{ fontSize: 42, mb: 2 }} />
+
+              <Typography variant="h6" sx={{ fontWeight: 800, mb: 1 }}>
+                Real-time availability
+              </Typography>
+
+              <Typography sx={{ color: "text.secondary" }}>
+                Users can search available rooms, tables, or time slots before
+                making a reservation.
+              </Typography>
+            </CardContent>
+          </Card>
+
+          <Card sx={{ height: "100%", borderRadius: 3 }}>
+            <CardContent sx={{ p: 3 }}>
+              <CalendarMonthIcon color="primary" sx={{ fontSize: 42, mb: 2 }} />
+
+              <Typography variant="h6" sx={{ fontWeight: 800, mb: 1 }}>
+                Booking management
+              </Typography>
+
+              <Typography sx={{ color: "text.secondary" }}>
+                Customers can create, view, update, and cancel their bookings
+                through the app.
+              </Typography>
+            </CardContent>
+          </Card>
+
+          <Card sx={{ height: "100%", borderRadius: 3 }}>
+            <CardContent sx={{ p: 3 }}>
+              <AdminPanelSettingsIcon
+                color="primary"
+                sx={{ fontSize: 42, mb: 2 }}
+              />
+
+              <Typography variant="h6" sx={{ fontWeight: 800, mb: 1 }}>
+                Admin dashboard
+              </Typography>
+
+              <Typography sx={{ color: "text.secondary" }}>
+                Admins can manage reservations, customers, inventory, and
+                availability rules.
+              </Typography>
+            </CardContent>
+          </Card>
+        </Box>
+      </Container>
+    </Box>
+  );
 }
 
-export default App
+export default App;
