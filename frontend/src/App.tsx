@@ -31,10 +31,21 @@ function App() {
       });
 
       setHotels(results);
-    } catch {
-      setErrorMessage(
-        "Could not search hotels. Make sure the Spring Boot backend is running."
-      );
+    } catch (error) {
+
+      if (error instanceof Error) {
+
+        setErrorMessage(error.message);
+
+      } else {
+
+        setErrorMessage(
+
+          "Could not search hotels. Make sure the Spring Boot backend is running."
+
+        );
+
+      }
     } finally {
       setIsLoading(false);
     }

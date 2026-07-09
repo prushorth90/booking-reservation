@@ -54,9 +54,11 @@ export async function searchHotels(
 
   );
 
-  if (!response.ok) {
+   if (!response.ok) {
 
-    throw new Error("Failed to search hotels");
+    const errorMessage = await response.text();
+
+    throw new Error(errorMessage || "Failed to search hotels");
 
   }
 
