@@ -10,7 +10,29 @@ import {
 
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 
-function AvailabilitySearchCard() {
+type AvailabilitySearchCardProps = {
+  location: string;
+  checkIn: string;
+  checkOut: string;
+  guests: number;
+  onLocationChange: (value: string) => void;
+  onCheckInChange: (value: string) => void;
+  onCheckOutChange: (value: string) => void;
+  onGuestsChange: (value: number) => void;
+  onSearch: () => void;
+};
+
+function AvailabilitySearchCard({
+  location,
+  checkIn,
+  checkOut,
+  guests,
+  onLocationChange,
+  onCheckInChange,
+  onCheckOutChange,
+  onGuestsChange,
+  onSearch,
+}: AvailabilitySearchCardProps) {
   return (
     <Card
       sx={{
@@ -35,18 +57,16 @@ function AvailabilitySearchCard() {
         </Box>
 
         <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-          <TextField
-            select
-            label="Reservation Type"
-            defaultValue="hotel"
-            fullWidth
-          >
+          <TextField select label="Reservation Type" defaultValue="hotel" fullWidth>
             <MenuItem value="hotel">Hotel Room</MenuItem>
-            <MenuItem value="restaurant">Restaurant Table</MenuItem>
-            <MenuItem value="appointment">Appointment</MenuItem>
           </TextField>
 
-          <TextField label="Location" defaultValue="Seattle, WA" fullWidth />
+          <TextField
+            label="Location"
+            value={location}
+            onChange={(event) => onLocationChange(event.target.value)}
+            fullWidth
+          />
 
           <Box
             sx={{
@@ -58,7 +78,8 @@ function AvailabilitySearchCard() {
             <TextField
               label="Start Date"
               type="date"
-              defaultValue="2026-07-20"
+              value={checkIn}
+              onChange={(event) => onCheckInChange(event.target.value)}
               fullWidth
               slotProps={{
                 inputLabel: {
@@ -70,7 +91,8 @@ function AvailabilitySearchCard() {
             <TextField
               label="End Date"
               type="date"
-              defaultValue="2026-07-23"
+              value={checkOut}
+              onChange={(event) => onCheckOutChange(event.target.value)}
               fullWidth
               slotProps={{
                 inputLabel: {
@@ -80,7 +102,15 @@ function AvailabilitySearchCard() {
             />
           </Box>
 
-          <Button size="large" variant="contained" fullWidth>
+          <TextField
+            label="Guests"
+            type="number"
+            value={guests}
+            onChange={(event) => onGuestsChange(Number(event.target.value))}
+            fullWidth
+          />
+
+          <Button size="large" variant="contained" fullWidth onClick={onSearch}>
             Search
           </Button>
         </Box>
