@@ -1,96 +1,70 @@
 package com.bookingapp.booking_service.service;
+
 import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 
 import com.bookingapp.booking_service.dto.HotelSearchResponse;
+import com.bookingapp.booking_service.model.Hotel;
+import com.bookingapp.booking_service.repository.HotelRepository;
 
 @Service
 
 public class HotelService {
-public List<HotelSearchResponse> searchHotels(
 
-        String location,
+    private final HotelRepository hotelRepository;
 
-        LocalDate checkIn,
+    public HotelService(HotelRepository hotelRepository) {
 
-        LocalDate checkOut,
-
-        int guests
-
-) {
-
-    if (!checkOut.isAfter(checkIn)) {
-
-        throw new IllegalArgumentException("Check out date must be after check in date");
+        this.hotelRepository = hotelRepository;
 
     }
 
-    return List.of(
+    public List<HotelSearchResponse> searchHotels(
 
-            new HotelSearchResponse(
+            String location,
 
-                    1L,
+            LocalDate checkIn,
 
-                    "Downtown Seattle Hotel",
+            LocalDate checkOut,
 
-                    "Seattle",
+            int guests
 
-                    "123 Pike Street",
+    ) {
 
-                    4.5,
+        if (!checkOut.isAfter(checkIn)) {
 
-                    180,
+            throw new IllegalArgumentException("Check out date must be after check in date");
 
-                    4,
+        }
 
-                    "https://images.unsplash.com/photo-1566073771259-6a8506099945"
+        List<Hotel> hotels = hotelRepository.findByCityIgnoreCase(location);
 
-            ),
+        return hotels.stream()
 
-            new HotelSearchResponse(
+                .map(hotel -> new HotelSearchResponse(
 
-                    2L,
+                        hotel.getId(),
 
-                    "Lake View Suites",
+                        hotel.getName(),
 
-                    "Seattle",
+                        hotel.getCity(),
 
-                    "88 Lake Union Ave",
+                        hotel.getAddress(),
 
-                    4.7,
+                        hotel.getRating(),
 
-                    230,
+                        hotel.getPricePerNight(),
 
-                    2,
+                        hotel.getAvailableRooms(),
 
-                    "https://images.unsplash.com/photo-1551882547-ff40c63fe5fa"
+                        hotel.getImageUrl()
 
-            ),
+                ))
 
-            new HotelSearchResponse(
+                .toList();
 
-                    3L,
+    }
 
-                    "Airport Business Inn",
-
-                    "Seattle",
-
-                    "500 Airport Way",
-
-                    4.1,
-
-                    140,
-
-                    6,
-
-                    "https://images.unsplash.com/photo-1564501049412-61c2a3083791"
-
-            )
-
-    );
-
-}
-     
 }
