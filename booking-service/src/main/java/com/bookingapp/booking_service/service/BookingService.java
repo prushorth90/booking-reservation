@@ -1,4 +1,6 @@
 package com.bookingapp.booking_service.service;
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import com.bookingapp.booking_service.dto.BookingResponse;
@@ -7,7 +9,6 @@ import com.bookingapp.booking_service.model.Booking;
 import com.bookingapp.booking_service.model.Room;
 import com.bookingapp.booking_service.repository.BookingRepository;
 import com.bookingapp.booking_service.repository.RoomRepository;
-
 @Service
 
 public class BookingService {
@@ -97,5 +98,33 @@ public class BookingService {
         );
 
     }
+
+    public List<BookingResponse> getAllBookings() {
+
+    return bookingRepository.findAll()
+
+            .stream()
+
+            .map(booking -> new BookingResponse(
+
+                    booking.getId(),
+
+                    booking.getGuestName(),
+
+                    booking.getRoom().getHotel().getName(),
+
+                    booking.getRoom().getRoomType(),
+
+                    booking.getCheckInDate(),
+
+                    booking.getCheckOutDate(),
+
+                    booking.getStatus()
+
+            ))
+
+            .toList();
+
+}
 
 }

@@ -2,7 +2,10 @@ package com.bookingapp.booking_service.controller;
 
 
 
+import java.util.List;
+
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -37,5 +40,13 @@ public class BookingController {
         return bookingService.createBooking(request);
 
     }
+
+    @GetMapping
+
+public List<BookingResponse> getAllBookings() {
+
+    return bookingService.getAllBookings();
+
+}
 
 }
