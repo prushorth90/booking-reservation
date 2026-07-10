@@ -17,13 +17,7 @@ public class BookingService {
 
     private final RoomRepository roomRepository;
 
-    public BookingService(
-
-            BookingRepository bookingRepository,
-
-            RoomRepository roomRepository
-
-    ) {
+    public BookingService(BookingRepository bookingRepository, RoomRepository roomRepository) {
 
         this.bookingRepository = bookingRepository;
 
@@ -126,5 +120,28 @@ public class BookingService {
             .toList();
 
 }
+public BookingResponse cancelBooking(Long bookingId) {
+    Booking booking = bookingRepository.findById(bookingId)
+            .orElseThrow(() -> new IllegalArgumentException("Booking not found"));
+
+    if ("CANCELLED".equals(booking.getStatus())) {
+        throw new IllegalArgumentException("Booking is already cancelled");
+    }
+
+    booking.setStatus("CANCELLED");
+
+    Booking savedBooking = bookingRepository.save(booking);
+
+    return new BookingResponse(
+            savedBooking.getId(),
+            savedBooking.getGuestName(),
+            savedBooking.getRoom().getHotel().getName(),
+            savedBooking.getRoom().getRoomType(),
+            savedBooking.getCheckInDate(),
+            savedBooking.getCheckOutDate(),
+            savedBooking.getStatus()
+    );
+}
+
 
 }
