@@ -1,5 +1,7 @@
 import { AppBar, Box, Button, Toolbar, Typography } from "@mui/material";
 
+import { Link as RouterLink } from "react-router-dom";
+
 function Navbar() {
 
   return (
@@ -36,9 +38,21 @@ function Navbar() {
 
         <Typography
 
+          component={RouterLink}
+
+          to="/"
+
           variant="h5"
 
-          sx={{ fontWeight: 900, color: "primary.main" }}
+          sx={{
+
+            fontWeight: 900,
+
+            color: "primary.main",
+
+            textDecoration: "none",
+
+          }}
 
         >
 
@@ -58,15 +72,31 @@ function Navbar() {
 
         >
 
-          <Button color="inherit">Features</Button>
+          <Button component={RouterLink} to="/" color="inherit">
 
-          <Button color="inherit">Bookings</Button>
+            Home
 
-          <Button color="inherit">Admin</Button>
+          </Button>
+
+          <Button component={RouterLink} to="/hotels" color="inherit">
+
+            Hotels
+
+          </Button>
+
+          <Button component={RouterLink} to="/bookings" color="inherit">
+
+            My Bookings
+
+          </Button>
 
         </Box>
 
-        <Button variant="contained">Get Started</Button>
+        <Button component={RouterLink} to="/hotels" variant="contained">
+
+          Get Started
+
+        </Button>
 
       </Toolbar>
 
