@@ -10,6 +10,8 @@ import HotelSearchPage from "./pages/HotelSearchPage";
 
 import BookingsPage from "./pages/BookingPage";
 
+import AdminPage from "./pages/AdminPage";
+
 function App() {
 
   return (
@@ -28,6 +30,7 @@ function App() {
 
           <Route path="/bookings" element={<BookingsPage />} />
 
+          <Route path="/admin" element={<AdminPage />} />
         </Routes>
 
       </Box>

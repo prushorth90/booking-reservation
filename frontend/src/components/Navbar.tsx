@@ -98,6 +98,11 @@ function Navbar() {
 
         </Button>
 
+        <Button component={RouterLink} to="/admin" color="inherit">
+
+            Admin
+
+        </Button>
       </Toolbar>
 
     </AppBar>
