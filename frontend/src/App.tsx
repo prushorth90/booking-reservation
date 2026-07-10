@@ -21,9 +21,15 @@ import BookingList from "./components/BookingList";
 
 import { searchHotels, type HotelSearchResult } from "./api/hotelapi";
 import {
+
   createBooking,
+
   getBookings,
+
+  cancelBooking,
+
   type BookingResponse,
+
 } from "./api/bookingApi";
 
 function App() {
@@ -141,6 +147,53 @@ function App() {
     }
   }
 
+   async function handleCancelBooking(bookingId: number) {
+
+  try {
+
+    setErrorMessage("");
+
+    setSuccessMessage("");
+
+    const cancelledBooking = await cancelBooking(bookingId);
+
+    setSuccessMessage(
+
+      `Booking cancelled for ${cancelledBooking.guestName} at ${cancelledBooking.hotelName}`
+
+    );
+
+    await handleLoadBookings();
+
+    const refreshedHotels = await searchHotels({
+
+      location,
+
+      checkIn,
+
+      checkOut,
+
+      guests,
+
+    });
+
+    setHotels(refreshedHotels);
+
+  } catch (error) {
+
+    if (error instanceof Error) {
+
+      setErrorMessage(error.message);
+
+    } else {
+
+      setErrorMessage("Could not cancel booking.");
+
+    }
+
+  }
+
+}
   return (
     <Box sx={{ minHeight: "100vh", bgcolor: "#f7f8fc" }}>
       <Navbar />
@@ -174,7 +227,13 @@ function App() {
           Load My Bookings
         </Button>
 
-        <BookingList bookings={bookings} />
+       <BookingList
+
+  bookings={bookings}
+
+  onCancelBooking={handleCancelBooking}
+
+/>
 
         <FeatureCards />
       </Container>

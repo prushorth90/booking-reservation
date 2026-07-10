@@ -75,3 +75,33 @@ export async function getBookings(): Promise<BookingResponse[]> {
   return response.json();
 
 }
+
+export async function cancelBooking(
+
+  bookingId: number
+
+): Promise<BookingResponse> {
+
+  const response = await fetch(
+
+    `http://localhost:8080/api/bookings/${bookingId}/cancel`,
+
+    {
+
+      method: "PATCH",
+
+    }
+
+  );
+
+  if (!response.ok) {
+
+    const errorMessage = await response.text();
+
+    throw new Error(errorMessage || "Failed to cancel booking");
+
+  }
+
+  return response.json();
+
+}

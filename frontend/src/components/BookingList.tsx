@@ -1,6 +1,8 @@
-import {
+ import {
 
   Box,
+
+  Button,
 
   Card,
 
@@ -18,9 +20,11 @@ type BookingListProps = {
 
   bookings: BookingResponse[];
 
+  onCancelBooking: (bookingId: number) => void;
+
 };
 
-function BookingList({ bookings }: BookingListProps) {
+function BookingList({ bookings, onCancelBooking }: BookingListProps) {
 
   if (bookings.length === 0) {
 
@@ -52,43 +56,79 @@ function BookingList({ bookings }: BookingListProps) {
 
       >
 
-        {bookings.map((booking) => (
+        {bookings.map((booking) => {
 
-          <Card key={booking.id} sx={{ borderRadius: 3 }}>
+          const isCancelled = booking.status === "CANCELLED";
 
-            <CardContent sx={{ p: 3 }}>
+          return (
 
-              <Typography variant="h6" sx={{ fontWeight: 800 }}>
+            <Card key={booking.id} sx={{ borderRadius: 3 }}>
 
-                {booking.hotelName}
+              <CardContent sx={{ p: 3 }}>
 
-              </Typography>
+                <Typography variant="h6" sx={{ fontWeight: 800 }}>
 
-              <Typography sx={{ color: "text.secondary", mb: 1 }}>
+                  {booking.hotelName}
 
-                {booking.roomType}
+                </Typography>
 
-              </Typography>
+                <Typography sx={{ color: "text.secondary", mb: 1 }}>
 
-              <Typography sx={{ mb: 1 }}>
+                  {booking.roomType}
 
-                Guest: {booking.guestName}
+                </Typography>
 
-              </Typography>
+                <Typography sx={{ mb: 1 }}>
 
-              <Typography sx={{ mb: 2 }}>
+                  Guest: {booking.guestName}
 
-                {booking.checkInDate} to {booking.checkOutDate}
+                </Typography>
 
-              </Typography>
+                <Typography sx={{ mb: 2 }}>
 
-              <Chip label={booking.status} color="success" size="small" />
+                  {booking.checkInDate} to {booking.checkOutDate}
 
-            </CardContent>
+                </Typography>
 
-          </Card>
+                <Chip
 
-        ))}
+                  label={booking.status}
+
+                  color={isCancelled ? "default" : "success"}
+
+                  size="small"
+
+                  sx={{ mb: 2 }}
+
+                />
+
+                {!isCancelled && (
+
+                  <Button
+
+                    variant="outlined"
+
+                    color="error"
+
+                    fullWidth
+
+                    onClick={() => onCancelBooking(booking.id)}
+
+                  >
+
+                    Cancel Booking
+
+                  </Button>
+
+                )}
+
+              </CardContent>
+
+            </Card>
+
+          );
+
+        })}
 
       </Box>
 
