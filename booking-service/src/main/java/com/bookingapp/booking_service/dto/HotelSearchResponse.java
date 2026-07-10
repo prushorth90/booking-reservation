@@ -18,6 +18,10 @@ public class HotelSearchResponse {
 
     private String imageUrl;
 
+    private Long roomId;
+
+    private String roomType;
+
     public HotelSearchResponse(
 
             Long id,
@@ -34,7 +38,11 @@ public class HotelSearchResponse {
 
             int availableRooms,
 
-            String imageUrl
+            String imageUrl,
+
+            Long roomId,
+
+            String roomType
 
     ) {
 
@@ -53,6 +61,10 @@ public class HotelSearchResponse {
         this.availableRooms = availableRooms;
 
         this.imageUrl = imageUrl;
+
+        this.roomId = roomId;
+
+        this.roomType = roomType;
 
     }
 
@@ -101,6 +113,18 @@ public class HotelSearchResponse {
     public String getImageUrl() {
 
         return imageUrl;
+
+    }
+
+    public Long getRoomId() {
+
+        return roomId;
+
+    }
+
+    public String getRoomType() {
+
+        return roomType;
 
     }
 

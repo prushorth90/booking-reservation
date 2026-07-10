@@ -1,5 +1,4 @@
 package com.bookingapp.booking_service.service;
-
 import java.time.LocalDate;
 import java.util.List;
 
@@ -98,13 +97,21 @@ public class HotelService {
 
                     }
 
-                    int lowestPrice = availableRooms.stream()
+                    Room cheapestRoom = availableRooms.stream()
 
-                            .mapToInt(Room::getPricePerNight)
+                            .min((room1, room2) ->
 
-                            .min()
+                                    Integer.compare(
 
-                            .orElse(0);
+                                            room1.getPricePerNight(),
+
+                                            room2.getPricePerNight()
+
+                                    )
+
+                            )
+
+                            .orElseThrow();
 
                     return new HotelSearchResponse(
 
@@ -118,11 +125,15 @@ public class HotelService {
 
                             hotel.getRating(),
 
-                            lowestPrice,
+                            cheapestRoom.getPricePerNight(),
 
                             availableRooms.size(),
 
-                            hotel.getImageUrl()
+                            hotel.getImageUrl(),
+
+                            cheapestRoom.getId(),
+
+                            cheapestRoom.getRoomType()
 
                     );
 
