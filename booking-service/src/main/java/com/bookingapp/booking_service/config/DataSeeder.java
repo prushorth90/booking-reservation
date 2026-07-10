@@ -1,10 +1,15 @@
 package com.bookingapp.booking_service.config;
+import java.time.LocalDate;
 
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
+import com.bookingapp.booking_service.model.Booking;
 import com.bookingapp.booking_service.model.Hotel;
+import com.bookingapp.booking_service.model.Room;
+import com.bookingapp.booking_service.repository.BookingRepository;
 import com.bookingapp.booking_service.repository.HotelRepository;
+import com.bookingapp.booking_service.repository.RoomRepository;
 
 @Component
 
@@ -12,9 +17,25 @@ public class DataSeeder implements CommandLineRunner {
 
     private final HotelRepository hotelRepository;
 
-    public DataSeeder(HotelRepository hotelRepository) {
+    private final RoomRepository roomRepository;
+
+    private final BookingRepository bookingRepository;
+
+    public DataSeeder(
+
+            HotelRepository hotelRepository,
+
+            RoomRepository roomRepository,
+
+            BookingRepository bookingRepository
+
+    ) {
 
         this.hotelRepository = hotelRepository;
+
+        this.roomRepository = roomRepository;
+
+        this.bookingRepository = bookingRepository;
 
     }
 
@@ -28,7 +49,7 @@ public class DataSeeder implements CommandLineRunner {
 
         }
 
-        hotelRepository.save(new Hotel(
+        Hotel downtown = hotelRepository.save(new Hotel(
 
                 "Downtown Seattle Hotel",
 
@@ -40,13 +61,13 @@ public class DataSeeder implements CommandLineRunner {
 
                 180,
 
-                4,
+                0,
 
                 "https://images.unsplash.com/photo-1566073771259-6a8506099945"
 
         ));
 
-        hotelRepository.save(new Hotel(
+        Hotel lakeView = hotelRepository.save(new Hotel(
 
                 "Lake View Suites",
 
@@ -58,13 +79,13 @@ public class DataSeeder implements CommandLineRunner {
 
                 230,
 
-                2,
+                0,
 
                 "https://images.unsplash.com/photo-1551882547-ff40c63fe5fa"
 
         ));
 
-        hotelRepository.save(new Hotel(
+        Hotel airport = hotelRepository.save(new Hotel(
 
                 "Airport Business Inn",
 
@@ -76,9 +97,37 @@ public class DataSeeder implements CommandLineRunner {
 
                 140,
 
-                6,
+                0,
 
                 "https://images.unsplash.com/photo-1564501049412-61c2a3083791"
+
+        ));
+
+        Room downtownQueen = roomRepository.save(new Room("Queen", 2, 180, downtown));
+
+        roomRepository.save(new Room("King", 2, 220, downtown));
+
+        roomRepository.save(new Room("Family Suite", 4, 300, downtown));
+
+        roomRepository.save(new Room("Lake Queen", 2, 230, lakeView));
+
+        roomRepository.save(new Room("Lake Suite", 4, 350, lakeView));
+
+        roomRepository.save(new Room("Business Queen", 2, 140, airport));
+
+        roomRepository.save(new Room("Business King", 2, 160, airport));
+
+        bookingRepository.save(new Booking(
+
+                "Test Guest",
+
+                LocalDate.of(2026, 7, 20),
+
+                LocalDate.of(2026, 7, 23),
+
+                "CONFIRMED",
+
+                downtownQueen
 
         ));
 

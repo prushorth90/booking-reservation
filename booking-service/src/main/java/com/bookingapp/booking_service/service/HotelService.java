@@ -7,7 +7,10 @@ import org.springframework.stereotype.Service;
 
 import com.bookingapp.booking_service.dto.HotelSearchResponse;
 import com.bookingapp.booking_service.model.Hotel;
+import com.bookingapp.booking_service.model.Room;
+import com.bookingapp.booking_service.repository.BookingRepository;
 import com.bookingapp.booking_service.repository.HotelRepository;
+import com.bookingapp.booking_service.repository.RoomRepository;
 
 @Service
 
@@ -15,9 +18,25 @@ public class HotelService {
 
     private final HotelRepository hotelRepository;
 
-    public HotelService(HotelRepository hotelRepository) {
+    private final RoomRepository roomRepository;
+
+    private final BookingRepository bookingRepository;
+
+    public HotelService(
+
+            HotelRepository hotelRepository,
+
+            RoomRepository roomRepository,
+
+            BookingRepository bookingRepository
+
+    ) {
 
         this.hotelRepository = hotelRepository;
+
+        this.roomRepository = roomRepository;
+
+        this.bookingRepository = bookingRepository;
 
     }
 
@@ -43,25 +62,73 @@ public class HotelService {
 
         return hotels.stream()
 
-                .map(hotel -> new HotelSearchResponse(
+                .map(hotel -> {
 
-                        hotel.getId(),
+                    List<Room> candidateRooms =
 
-                        hotel.getName(),
+                            roomRepository.findByHotelIdAndCapacityGreaterThanEqual(
 
-                        hotel.getCity(),
+                                    hotel.getId(),
 
-                        hotel.getAddress(),
+                                    guests
 
-                        hotel.getRating(),
+                            );
 
-                        hotel.getPricePerNight(),
+                    List<Room> availableRooms = candidateRooms.stream()
 
-                        hotel.getAvailableRooms(),
+                            .filter(room -> !bookingRepository
 
-                        hotel.getImageUrl()
+                                    .existsByRoomIdAndStatusAndCheckInDateLessThanAndCheckOutDateGreaterThan(
 
-                ))
+                                            room.getId(),
+
+                                            "CONFIRMED",
+
+                                            checkOut,
+
+                                            checkIn
+
+                                    ))
+
+                            .toList();
+
+                    if (availableRooms.isEmpty()) {
+
+                        return null;
+
+                    }
+
+                    int lowestPrice = availableRooms.stream()
+
+                            .mapToInt(Room::getPricePerNight)
+
+                            .min()
+
+                            .orElse(0);
+
+                    return new HotelSearchResponse(
+
+                            hotel.getId(),
+
+                            hotel.getName(),
+
+                            hotel.getCity(),
+
+                            hotel.getAddress(),
+
+                            hotel.getRating(),
+
+                            lowestPrice,
+
+                            availableRooms.size(),
+
+                            hotel.getImageUrl()
+
+                    );
+
+                })
+
+                .filter(result -> result != null)
 
                 .toList();
 
