@@ -16,6 +16,10 @@ export type HotelSearchResult = {
 
   imageUrl: string;
 
+  roomId: number;
+
+  roomType: string;
+
 };
 
 export type HotelSearchParams = {
@@ -54,7 +58,7 @@ export async function searchHotels(
 
   );
 
-   if (!response.ok) {
+  if (!response.ok) {
 
     const errorMessage = await response.text();
 
