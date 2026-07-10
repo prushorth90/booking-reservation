@@ -59,3 +59,19 @@ export async function createBooking(
   return response.json();
 
 }
+
+export async function getBookings(): Promise<BookingResponse[]> {
+
+  const response = await fetch("http://localhost:8080/api/bookings");
+
+  if (!response.ok) {
+
+    const errorMessage = await response.text();
+
+    throw new Error(errorMessage || "Failed to load bookings");
+
+  }
+
+  return response.json();
+
+}
