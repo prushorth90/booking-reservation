@@ -72,4 +72,46 @@ public class Hotel {
     public String getImageUrl() {
         return imageUrl;
     }
+
+    public void setName(String name) {
+
+    this.name = name;
+
+}
+
+public void setCity(String city) {
+
+    this.city = city;
+
+}
+
+public void setAddress(String address) {
+
+    this.address = address;
+
+}
+
+public void setRating(double rating) {
+
+    this.rating = rating;
+
+}
+
+public void setPricePerNight(int pricePerNight) {
+
+    this.pricePerNight = pricePerNight;
+
+}
+
+public void setAvailableRooms(int availableRooms) {
+
+    this.availableRooms = availableRooms;
+
+}
+
+public void setImageUrl(String imageUrl) {
+
+    this.imageUrl = imageUrl;
+
+}
 }
