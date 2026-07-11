@@ -36,9 +36,21 @@ import {
 
 } from "../api/adminApi";
 
+import {
+
+  cancelBooking,
+
+  getBookings,
+
+  type BookingResponse,
+
+} from "../api/bookingApi";
+
 function AdminPage() {
 
   const [hotels, setHotels] = useState<AdminHotel[]>([]);
+
+  const [bookings, setBookings] = useState<BookingResponse[]>([]);
 
   const [hotelName, setHotelName] = useState("");
 
@@ -83,6 +95,32 @@ function AdminPage() {
       } else {
 
         setErrorMessage("Could not load hotels.");
+
+      }
+
+    }
+
+  }
+
+  async function loadBookings() {
+
+    try {
+
+      setErrorMessage("");
+
+      const results = await getBookings();
+
+      setBookings(results);
+
+    } catch (error) {
+
+      if (error instanceof Error) {
+
+        setErrorMessage(error.message);
+
+      } else {
+
+        setErrorMessage("Could not load bookings.");
 
       }
 
@@ -202,9 +240,51 @@ function AdminPage() {
 
   }
 
+  async function handleCancelBooking(bookingId: number) {
+
+    try {
+
+      setIsLoading(true);
+
+      setErrorMessage("");
+
+      setSuccessMessage("");
+
+      const cancelledBooking = await cancelBooking(bookingId);
+
+      setSuccessMessage(
+
+        `Cancelled booking for ${cancelledBooking.guestName} at ${cancelledBooking.hotelName}`
+
+      );
+
+      await loadBookings();
+
+    } catch (error) {
+
+      if (error instanceof Error) {
+
+        setErrorMessage(error.message);
+
+      } else {
+
+        setErrorMessage("Could not cancel booking.");
+
+      }
+
+    } finally {
+
+      setIsLoading(false);
+
+    }
+
+  }
+
   useEffect(() => {
 
     loadHotels();
+
+    loadBookings();
 
   }, []);
 
@@ -505,6 +585,110 @@ function AdminPage() {
             </Card>
 
           ))}
+
+        </Box>
+
+        <Typography variant="h4" sx={{ fontWeight: 900, mb: 3, mt: 6 }}>
+
+          Customer Bookings
+
+        </Typography>
+
+        <Box
+
+          sx={{
+
+            display: "grid",
+
+            gridTemplateColumns: { xs: "1fr", md: "repeat(3, 1fr)" },
+
+            gap: 3,
+
+          }}
+
+        >
+
+          {bookings.map((booking) => {
+
+            const isCancelled = booking.status === "CANCELLED";
+
+            return (
+
+              <Card key={booking.id} sx={{ borderRadius: 3 }}>
+
+                <CardContent sx={{ p: 3 }}>
+
+                  <Typography variant="h6" sx={{ fontWeight: 800 }}>
+
+                    {booking.hotelName}
+
+                  </Typography>
+
+                  <Typography sx={{ color: "text.secondary", mb: 1 }}>
+
+                    {booking.roomType}
+
+                  </Typography>
+
+                  <Typography sx={{ mb: 1 }}>
+
+                    Guest: {booking.guestName}
+
+                  </Typography>
+
+                  <Typography sx={{ mb: 2 }}>
+
+                    {booking.checkInDate} to {booking.checkOutDate}
+
+                  </Typography>
+
+                  <Typography
+
+                    sx={{
+
+                      fontWeight: 700,
+
+                      color: isCancelled ? "text.secondary" : "success.main",
+
+                      mb: 2,
+
+                    }}
+
+                  >
+
+                    {booking.status}
+
+                  </Typography>
+
+                  {!isCancelled && (
+
+                    <Button
+
+                      variant="outlined"
+
+                      color="error"
+
+                      fullWidth
+
+                      onClick={() => handleCancelBooking(booking.id)}
+
+                      disabled={isLoading}
+
+                    >
+
+                      Cancel Booking
+
+                    </Button>
+
+                  )}
+
+                </CardContent>
+
+              </Card>
+
+            );
+
+          })}
 
         </Box>
 
