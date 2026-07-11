@@ -1,13 +1,19 @@
 package com.bookingapp.booking_service.service;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
-
 import com.bookingapp.booking_service.dto.AuthResponse;
+
 import com.bookingapp.booking_service.dto.LoginRequest;
+
 import com.bookingapp.booking_service.dto.RegisterRequest;
+
 import com.bookingapp.booking_service.model.AppUser;
+
 import com.bookingapp.booking_service.model.UserRole;
+
 import com.bookingapp.booking_service.repository.AppUserRepository;
+
+import org.springframework.security.crypto.password.PasswordEncoder;
+
+import org.springframework.stereotype.Service;
 
 @Service
 
@@ -17,17 +23,23 @@ public class AuthService {
 
     private final PasswordEncoder passwordEncoder;
 
+    private final JwtService jwtService;
+
     public AuthService(
 
             AppUserRepository appUserRepository,
 
-            PasswordEncoder passwordEncoder
+            PasswordEncoder passwordEncoder,
+
+            JwtService jwtService
 
     ) {
 
         this.appUserRepository = appUserRepository;
 
         this.passwordEncoder = passwordEncoder;
+
+        this.jwtService = jwtService;
 
     }
 
@@ -53,7 +65,11 @@ public class AuthService {
 
         AppUser savedUser = appUserRepository.save(user);
 
+        String token = jwtService.generateToken(savedUser);
+
         return new AuthResponse(
+
+                token,
 
                 savedUser.getId(),
 
@@ -79,7 +95,11 @@ public class AuthService {
 
         }
 
+        String token = jwtService.generateToken(user);
+
         return new AuthResponse(
+
+                token,
 
                 user.getId(),
 
