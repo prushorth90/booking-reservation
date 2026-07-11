@@ -31,7 +31,8 @@ function LoginPage() {
       });
 
       saveAuth(auth);
-
+      window.dispatchEvent(new Event("auth-changed"));
+      
       if (auth.role === "ADMIN") {
 
         navigate("/admin");

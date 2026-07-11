@@ -1,8 +1,62 @@
+import { useEffect, useState } from "react";
+
 import { AppBar, Box, Button, Toolbar, Typography } from "@mui/material";
 
-import { Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink, useNavigate } from "react-router-dom";
+
+import {
+
+  clearSavedAuth,
+
+  getSavedAuth,
+
+  type AuthResponse,
+
+} from "../api/authApi";
 
 function Navbar() {
+
+  const navigate = useNavigate();
+
+  const [auth, setAuth] = useState<AuthResponse | null>(getSavedAuth());
+
+  useEffect(() => {
+
+    function handleStorageChange() {
+
+      setAuth(getSavedAuth());
+
+    }
+
+    window.addEventListener("storage", handleStorageChange);
+
+    window.addEventListener("auth-changed", handleStorageChange);
+
+    return () => {
+
+      window.removeEventListener("storage", handleStorageChange);
+
+      window.removeEventListener("auth-changed", handleStorageChange);
+
+    };
+
+  }, []);
+
+  function handleLogout() {
+
+    clearSavedAuth();
+
+    setAuth(null);
+
+    window.dispatchEvent(new Event("auth-changed"));
+
+    navigate("/login");
+
+  }
+
+  const isLoggedIn = auth !== null;
+
+  const isAdmin = auth?.role === "ADMIN";
 
   return (
 
@@ -68,6 +122,8 @@ function Navbar() {
 
             gap: 2,
 
+            alignItems: "center",
+
           }}
 
         >
@@ -84,25 +140,82 @@ function Navbar() {
 
           </Button>
 
-          <Button component={RouterLink} to="/bookings" color="inherit">
+          {isLoggedIn && (
 
-            My Bookings
+            <Button component={RouterLink} to="/bookings" color="inherit">
 
-          </Button>
+              My Bookings
+
+            </Button>
+
+          )}
+
+          {isAdmin && (
+
+            <Button component={RouterLink} to="/admin" color="inherit">
+
+              Admin
+
+            </Button>
+
+          )}
 
         </Box>
 
-        <Button component={RouterLink} to="/hotels" variant="contained">
+        <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
 
-          Get Started
+          {!isLoggedIn ? (
 
-        </Button>
+            <>
 
-        <Button component={RouterLink} to="/admin" color="inherit">
+              <Button component={RouterLink} to="/login" color="inherit">
 
-            Admin
+                Login
 
-        </Button>
+              </Button>
+
+              <Button component={RouterLink} to="/register" variant="contained">
+
+                Register
+
+              </Button>
+
+            </>
+
+          ) : (
+
+            <>
+
+              <Typography
+
+                sx={{
+
+                  display: { xs: "none", md: "block" },
+
+                  color: "text.secondary",
+
+                  fontSize: 14,
+
+                }}
+
+              >
+
+                {auth.name} · {auth.role}
+
+              </Typography>
+
+              <Button variant="outlined" onClick={handleLogout}>
+
+                Logout
+
+              </Button>
+
+            </>
+
+          )}
+
+        </Box>
+
       </Toolbar>
 
     </AppBar>

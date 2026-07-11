@@ -22,6 +22,7 @@ function RegisterPage() {
       });
 
       saveAuth(auth);
+      window.dispatchEvent(new Event("auth-changed"));
       navigate("/hotels");
     } catch (error) {
       if (error instanceof Error) {
