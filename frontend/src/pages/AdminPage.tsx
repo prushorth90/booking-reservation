@@ -23,6 +23,15 @@ import {
   Typography,
 
 } from "@mui/material";
+ 
+
+import {
+
+  cancelBooking,
+
+  type BookingResponse,
+
+} from "../api/bookingApi";
 
 import {
 
@@ -30,21 +39,13 @@ import {
 
   createAdminRoom,
 
+  getAdminBookings,
+
   getAdminHotels,
 
   type AdminHotel,
 
 } from "../api/adminApi";
-
-import {
-
-  cancelBooking,
-
-  getBookings,
-
-  type BookingResponse,
-
-} from "../api/bookingApi";
 
 function AdminPage() {
 
@@ -108,7 +109,7 @@ function AdminPage() {
 
       setErrorMessage("");
 
-      const results = await getBookings();
+      const results = await getAdminBookings();
 
       setBookings(results);
 

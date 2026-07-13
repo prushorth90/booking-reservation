@@ -1,12 +1,17 @@
 package com.bookingapp.booking_service.config;
+
 import java.time.LocalDate;
 
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import com.bookingapp.booking_service.model.AppUser;
 import com.bookingapp.booking_service.model.Booking;
 import com.bookingapp.booking_service.model.Hotel;
 import com.bookingapp.booking_service.model.Room;
+import com.bookingapp.booking_service.model.UserRole;
+import com.bookingapp.booking_service.repository.AppUserRepository;
 import com.bookingapp.booking_service.repository.BookingRepository;
 import com.bookingapp.booking_service.repository.HotelRepository;
 import com.bookingapp.booking_service.repository.RoomRepository;
@@ -21,13 +26,21 @@ public class DataSeeder implements CommandLineRunner {
 
     private final BookingRepository bookingRepository;
 
+    private final AppUserRepository appUserRepository;
+
+    private final PasswordEncoder passwordEncoder;
+
     public DataSeeder(
 
             HotelRepository hotelRepository,
 
             RoomRepository roomRepository,
 
-            BookingRepository bookingRepository
+            BookingRepository bookingRepository,
+
+            AppUserRepository appUserRepository,
+
+            PasswordEncoder passwordEncoder
 
     ) {
 
@@ -36,6 +49,10 @@ public class DataSeeder implements CommandLineRunner {
         this.roomRepository = roomRepository;
 
         this.bookingRepository = bookingRepository;
+
+        this.appUserRepository = appUserRepository;
+
+        this.passwordEncoder = passwordEncoder;
 
     }
 
@@ -48,6 +65,30 @@ public class DataSeeder implements CommandLineRunner {
             return;
 
         }
+
+        AppUser customer = appUserRepository.save(new AppUser(
+
+                "Test Customer",
+
+                "customer@example.com",
+
+                passwordEncoder.encode("password123"),
+
+                UserRole.CUSTOMER
+
+        ));
+
+        AppUser admin = appUserRepository.save(new AppUser(
+
+                "Admin User",
+
+                "admin@example.com",
+
+                passwordEncoder.encode("password123"),
+
+                UserRole.ADMIN
+
+        ));
 
         Hotel downtown = hotelRepository.save(new Hotel(
 
@@ -103,19 +144,89 @@ public class DataSeeder implements CommandLineRunner {
 
         ));
 
-        Room downtownQueen = roomRepository.save(new Room("Queen", 2, 180, downtown));
+        Room downtownQueen = roomRepository.save(new Room(
 
-        roomRepository.save(new Room("King", 2, 220, downtown));
+                "Queen",
 
-        roomRepository.save(new Room("Family Suite", 4, 300, downtown));
+                2,
 
-        roomRepository.save(new Room("Lake Queen", 2, 230, lakeView));
+                180,
 
-        roomRepository.save(new Room("Lake Suite", 4, 350, lakeView));
+                downtown
 
-        roomRepository.save(new Room("Business Queen", 2, 140, airport));
+        ));
 
-        roomRepository.save(new Room("Business King", 2, 160, airport));
+        roomRepository.save(new Room(
+
+                "King",
+
+                2,
+
+                220,
+
+                downtown
+
+        ));
+
+        roomRepository.save(new Room(
+
+                "Family Suite",
+
+                4,
+
+                300,
+
+                downtown
+
+        ));
+
+        roomRepository.save(new Room(
+
+                "Lake Queen",
+
+                2,
+
+                230,
+
+                lakeView
+
+        ));
+
+        roomRepository.save(new Room(
+
+                "Lake Suite",
+
+                4,
+
+                350,
+
+                lakeView
+
+        ));
+
+        roomRepository.save(new Room(
+
+                "Business Queen",
+
+                2,
+
+                140,
+
+                airport
+
+        ));
+
+        roomRepository.save(new Room(
+
+                "Business King",
+
+                2,
+
+                160,
+
+                airport
+
+        ));
 
         bookingRepository.save(new Booking(
 
@@ -127,7 +238,9 @@ public class DataSeeder implements CommandLineRunner {
 
                 "CONFIRMED",
 
-                downtownQueen
+                downtownQueen,
+
+                customer
 
         ));
 

@@ -5,7 +5,7 @@ import java.time.LocalDate;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.bookingapp.booking_service.model.Booking;
-
+import java.util.List;
 public interface BookingRepository extends JpaRepository<Booking, Long> {
 
     boolean existsByRoomIdAndStatusAndCheckInDateLessThanAndCheckOutDateGreaterThan(
@@ -19,5 +19,6 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             LocalDate checkIn
 
     );
-
+    List<Booking> findByUserEmailIgnoreCase(String email);
 }
+

@@ -1,4 +1,5 @@
 import { getAuthToken } from "./authApi";
+import type { BookingResponse } from "./bookingApi";
 
 export type AdminHotel = {
   id: number;
@@ -84,3 +85,24 @@ export async function createAdminRoom(
 
   return response.json();
 }
+
+export async function getAdminBookings(): Promise<BookingResponse[]> {
+
+  const response = await fetch("http://localhost:8080/api/admin/bookings", {
+
+    headers: getAuthHeaders(),
+
+  });
+
+  if (!response.ok) {
+
+    const errorMessage = await response.text();
+
+    throw new Error(errorMessage || "Failed to load admin bookings");
+
+  }
+
+  return response.json();
+
+}
+ 

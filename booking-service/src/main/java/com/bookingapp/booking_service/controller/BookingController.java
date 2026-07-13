@@ -1,23 +1,17 @@
 package com.bookingapp.booking_service.controller;
 
 
-
-import java.util.List;
-
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.bookingapp.booking_service.dto.BookingResponse;
+
 import com.bookingapp.booking_service.dto.CreateBookingRequest;
+
 import com.bookingapp.booking_service.service.BookingService;
 
 import jakarta.validation.Valid;
+
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 
@@ -45,18 +39,18 @@ public class BookingController {
 
     @GetMapping
 
-public List<BookingResponse> getAllBookings() {
+    public List<BookingResponse> getBookingsForCurrentUser() {
 
-    return bookingService.getAllBookings();
+        return bookingService.getBookingsForCurrentUser();
 
-}
+    }
 
-@PatchMapping("/{bookingId}/cancel")
+    @PatchMapping("/{bookingId}/cancel")
 
-public BookingResponse cancelBooking(@PathVariable Long bookingId) {
+    public BookingResponse cancelBooking(@PathVariable Long bookingId) {
 
-    return bookingService.cancelBooking(bookingId);
+        return bookingService.cancelBooking(bookingId);
 
-}
+    }
 
 }

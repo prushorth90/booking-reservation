@@ -1,14 +1,26 @@
 package com.bookingapp.booking_service.service;
-import java.util.List;
+import com.bookingapp.booking_service.dto.BookingResponse;
+
+import com.bookingapp.booking_service.dto.CreateBookingRequest;
+
+import com.bookingapp.booking_service.model.AppUser;
+
+import com.bookingapp.booking_service.model.Booking;
+
+import com.bookingapp.booking_service.model.Room;
+
+import com.bookingapp.booking_service.repository.AppUserRepository;
+
+import com.bookingapp.booking_service.repository.BookingRepository;
+
+import com.bookingapp.booking_service.repository.RoomRepository;
+
+import com.bookingapp.booking_service.security.SecurityUtils;
 
 import org.springframework.stereotype.Service;
 
-import com.bookingapp.booking_service.dto.BookingResponse;
-import com.bookingapp.booking_service.dto.CreateBookingRequest;
-import com.bookingapp.booking_service.model.Booking;
-import com.bookingapp.booking_service.model.Room;
-import com.bookingapp.booking_service.repository.BookingRepository;
-import com.bookingapp.booking_service.repository.RoomRepository;
+import java.util.List;
+
 @Service
 
 public class BookingService {
@@ -17,11 +29,23 @@ public class BookingService {
 
     private final RoomRepository roomRepository;
 
-    public BookingService(BookingRepository bookingRepository, RoomRepository roomRepository) {
+    private final AppUserRepository appUserRepository;
+
+    public BookingService(
+
+            BookingRepository bookingRepository,
+
+            RoomRepository roomRepository,
+
+            AppUserRepository appUserRepository
+
+    ) {
 
         this.bookingRepository = bookingRepository;
 
         this.roomRepository = roomRepository;
+
+        this.appUserRepository = appUserRepository;
 
     }
 
@@ -32,6 +56,12 @@ public class BookingService {
             throw new IllegalArgumentException("Check out date must be after check in date");
 
         }
+
+        String currentUserEmail = SecurityUtils.getCurrentUserEmail();
+
+        AppUser user = appUserRepository.findByEmailIgnoreCase(currentUserEmail)
+
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
         Room room = roomRepository.findById(request.getRoomId())
 
@@ -67,81 +97,99 @@ public class BookingService {
 
                 "CONFIRMED",
 
-                room
+                room,
+
+                user
 
         );
 
         Booking savedBooking = bookingRepository.save(booking);
 
+        return toBookingResponse(savedBooking);
+
+    }
+
+    public List<BookingResponse> getBookingsForCurrentUser() {
+
+        String currentUserEmail = SecurityUtils.getCurrentUserEmail();
+
+        return bookingRepository.findByUserEmailIgnoreCase(currentUserEmail)
+
+                .stream()
+
+                .map(this::toBookingResponse)
+
+                .toList();
+
+    }
+
+    public List<BookingResponse> getAllBookingsForAdmin() {
+
+        return bookingRepository.findAll()
+
+                .stream()
+
+                .map(this::toBookingResponse)
+
+                .toList();
+
+    }
+
+        public BookingResponse cancelBooking(Long bookingId) {
+
+        String currentUserEmail = SecurityUtils.getCurrentUserEmail();
+
+        Booking booking = bookingRepository.findById(bookingId)
+
+                .orElseThrow(() -> new IllegalArgumentException("Booking not found"));
+
+        boolean isOwner = booking.getUser().getEmail().equalsIgnoreCase(currentUserEmail);
+
+        boolean isAdmin = SecurityUtils.currentUserHasRole("ADMIN");
+
+        if (!isOwner && !isAdmin) {
+
+            throw new IllegalArgumentException("You are not allowed to cancel this booking");
+
+        }
+
+        if ("CANCELLED".equals(booking.getStatus())) {
+
+            throw new IllegalArgumentException("Booking is already cancelled");
+
+        }
+
+        booking.setStatus("CANCELLED");
+
+        Booking savedBooking = bookingRepository.save(booking);
+
+        return toBookingResponse(savedBooking);
+
+    }
+
+    private BookingResponse toBookingResponse(Booking booking) {
+
         return new BookingResponse(
 
-                savedBooking.getId(),
+                booking.getId(),
 
-                savedBooking.getGuestName(),
+                booking.getGuestName(),
 
-                room.getHotel().getName(),
+                booking.getRoom().getHotel().getName(),
 
-                room.getRoomType(),
+                booking.getRoom().getRoomType(),
 
-                savedBooking.getCheckInDate(),
+                booking.getCheckInDate(),
 
-                savedBooking.getCheckOutDate(),
+                booking.getCheckOutDate(),
 
-                savedBooking.getStatus()
+                booking.getStatus()
 
         );
 
     }
 
-    public List<BookingResponse> getAllBookings() {
-
-    return bookingRepository.findAll()
-
-            .stream()
-
-            .map(booking -> new BookingResponse(
-
-                    booking.getId(),
-
-                    booking.getGuestName(),
-
-                    booking.getRoom().getHotel().getName(),
-
-                    booking.getRoom().getRoomType(),
-
-                    booking.getCheckInDate(),
-
-                    booking.getCheckOutDate(),
-
-                    booking.getStatus()
-
-            ))
-
-            .toList();
-
 }
-public BookingResponse cancelBooking(Long bookingId) {
-    Booking booking = bookingRepository.findById(bookingId)
-            .orElseThrow(() -> new IllegalArgumentException("Booking not found"));
-
-    if ("CANCELLED".equals(booking.getStatus())) {
-        throw new IllegalArgumentException("Booking is already cancelled");
-    }
-
-    booking.setStatus("CANCELLED");
-
-    Booking savedBooking = bookingRepository.save(booking);
-
-    return new BookingResponse(
-            savedBooking.getId(),
-            savedBooking.getGuestName(),
-            savedBooking.getRoom().getHotel().getName(),
-            savedBooking.getRoom().getRoomType(),
-            savedBooking.getCheckInDate(),
-            savedBooking.getCheckOutDate(),
-            savedBooking.getStatus()
-    );
-}
+     
 
 
-}
