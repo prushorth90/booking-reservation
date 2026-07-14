@@ -1,0 +1,38 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: booking-postgres-compose
+    environment:
+      POSTGRES_DB: booking_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5433:5432"
+    volumes:
+      - booking_postgres_data:/var/lib/postgresql/data
+
+  backend:
+    build:
+      context: ./booking-service
+    container_name: booking-backend
+    environment:
+      DB_URL: jdbc:postgresql://postgres:5432/booking_db
+      DB_USERNAME: postgres
+      DB_PASSWORD: password
+      JWT_SECRET: my-super-secret-dev-key-that-is-at-least-32-characters-long
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+
+  frontend:
+    build:
+      context: ./frontend
+    container_name: booking-frontend
+    ports:
+      - "5173:80"
+    depends_on:
+      - backend
+
+volumes:
+  booking_postgres_data:
