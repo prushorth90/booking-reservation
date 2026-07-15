@@ -96,4 +96,4 @@ Spring Boot backend
         |
         | JPA
         v
-PostgreSQL
+PostgreSQL 
