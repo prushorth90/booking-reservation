@@ -1,25 +1,17 @@
 package com.bookingapp.booking_service.service;
-import com.bookingapp.booking_service.dto.BookingResponse;
-
-import com.bookingapp.booking_service.dto.CreateBookingRequest;
-
-import com.bookingapp.booking_service.model.AppUser;
-
-import com.bookingapp.booking_service.model.Booking;
-
-import com.bookingapp.booking_service.model.Room;
-
-import com.bookingapp.booking_service.repository.AppUserRepository;
-
-import com.bookingapp.booking_service.repository.BookingRepository;
-
-import com.bookingapp.booking_service.repository.RoomRepository;
-
-import com.bookingapp.booking_service.security.SecurityUtils;
+import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import com.bookingapp.booking_service.dto.BookingResponse;
+import com.bookingapp.booking_service.dto.CreateBookingRequest;
+import com.bookingapp.booking_service.model.AppUser;
+import com.bookingapp.booking_service.model.Booking;
+import com.bookingapp.booking_service.model.Room;
+import com.bookingapp.booking_service.repository.AppUserRepository;
+import com.bookingapp.booking_service.repository.BookingRepository;
+import com.bookingapp.booking_service.repository.RoomRepository;
+import com.bookingapp.booking_service.security.SecurityUtils;
 
 @Service
 
@@ -31,13 +23,17 @@ public class BookingService {
 
     private final AppUserRepository appUserRepository;
 
+    private final MetricsService metricsService;
+
     public BookingService(
 
             BookingRepository bookingRepository,
 
             RoomRepository roomRepository,
 
-            AppUserRepository appUserRepository
+            AppUserRepository appUserRepository,
+
+            MetricsService metricsService
 
     ) {
 
@@ -47,65 +43,79 @@ public class BookingService {
 
         this.appUserRepository = appUserRepository;
 
+        this.metricsService = metricsService;
+
     }
 
     public BookingResponse createBooking(CreateBookingRequest request) {
 
-        if (!request.getCheckOutDate().isAfter(request.getCheckInDate())) {
+        try {
 
-            throw new IllegalArgumentException("Check out date must be after check in date");
+            if (!request.getCheckOutDate().isAfter(request.getCheckInDate())) {
+
+                throw new IllegalArgumentException("Check out date must be after check in date");
+
+            }
+
+            String currentUserEmail = SecurityUtils.getCurrentUserEmail();
+
+            AppUser user = appUserRepository.findByEmailIgnoreCase(currentUserEmail)
+
+                    .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+            Room room = roomRepository.findById(request.getRoomId())
+
+                    .orElseThrow(() -> new IllegalArgumentException("Room not found"));
+
+            boolean alreadyBooked =
+
+                    bookingRepository.existsByRoomIdAndStatusAndCheckInDateLessThanAndCheckOutDateGreaterThan(
+
+                            room.getId(),
+
+                            "CONFIRMED",
+
+                            request.getCheckOutDate(),
+
+                            request.getCheckInDate()
+
+                    );
+
+            if (alreadyBooked) {
+
+                throw new IllegalArgumentException("Room is already booked for these dates");
+
+            }
+
+            Booking booking = new Booking(
+
+                    request.getGuestName(),
+
+                    request.getCheckInDate(),
+
+                    request.getCheckOutDate(),
+
+                    "CONFIRMED",
+
+                    room,
+
+                    user
+
+            );
+
+            Booking savedBooking = bookingRepository.save(booking);
+
+            metricsService.incrementBookingCreated();
+
+            return toBookingResponse(savedBooking);
+
+        } catch (RuntimeException exception) {
+
+            metricsService.incrementBookingFailed();
+
+            throw exception;
 
         }
-
-        String currentUserEmail = SecurityUtils.getCurrentUserEmail();
-
-        AppUser user = appUserRepository.findByEmailIgnoreCase(currentUserEmail)
-
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
-
-        Room room = roomRepository.findById(request.getRoomId())
-
-                .orElseThrow(() -> new IllegalArgumentException("Room not found"));
-
-        boolean alreadyBooked =
-
-                bookingRepository.existsByRoomIdAndStatusAndCheckInDateLessThanAndCheckOutDateGreaterThan(
-
-                        room.getId(),
-
-                        "CONFIRMED",
-
-                        request.getCheckOutDate(),
-
-                        request.getCheckInDate()
-
-                );
-
-        if (alreadyBooked) {
-
-            throw new IllegalArgumentException("Room is already booked for these dates");
-
-        }
-
-        Booking booking = new Booking(
-
-                request.getGuestName(),
-
-                request.getCheckInDate(),
-
-                request.getCheckOutDate(),
-
-                "CONFIRMED",
-
-                room,
-
-                user
-
-        );
-
-        Booking savedBooking = bookingRepository.save(booking);
-
-        return toBookingResponse(savedBooking);
 
     }
 
@@ -135,7 +145,7 @@ public class BookingService {
 
     }
 
-        public BookingResponse cancelBooking(Long bookingId) {
+    public BookingResponse cancelBooking(Long bookingId) {
 
         String currentUserEmail = SecurityUtils.getCurrentUserEmail();
 
@@ -162,6 +172,8 @@ public class BookingService {
         booking.setStatus("CANCELLED");
 
         Booking savedBooking = bookingRepository.save(booking);
+
+        metricsService.incrementBookingCancelled();
 
         return toBookingResponse(savedBooking);
 
@@ -190,6 +202,3 @@ public class BookingService {
     }
 
 }
-     
-
-

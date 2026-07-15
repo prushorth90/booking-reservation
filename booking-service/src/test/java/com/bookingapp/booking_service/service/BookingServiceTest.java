@@ -51,6 +51,9 @@ class BookingServiceTest {
     @InjectMocks
 
     private BookingService bookingService;
+     
+    @Mock
+    private MetricsService metricsService;
 
     @AfterEach
 

@@ -21,13 +21,17 @@ public class HotelService {
 
     private final BookingRepository bookingRepository;
 
+    private final MetricsService metricsService;
+
     public HotelService(
 
             HotelRepository hotelRepository,
 
             RoomRepository roomRepository,
 
-            BookingRepository bookingRepository
+            BookingRepository bookingRepository,
+
+            MetricsService metricsService
 
     ) {
 
@@ -36,6 +40,8 @@ public class HotelService {
         this.roomRepository = roomRepository;
 
         this.bookingRepository = bookingRepository;
+
+        this.metricsService = metricsService;
 
     }
 
@@ -57,9 +63,11 @@ public class HotelService {
 
         }
 
+        metricsService.incrementHotelSearch();
+
         List<Hotel> hotels = hotelRepository.findByCityIgnoreCase(location);
 
-        return hotels.stream()
+        List<HotelSearchResponse> results = hotels.stream()
 
                 .map(hotel -> {
 
@@ -142,6 +150,14 @@ public class HotelService {
                 .filter(result -> result != null)
 
                 .toList();
+
+        if (results.isEmpty()) {
+
+            metricsService.incrementHotelSearchNoResults();
+
+        }
+
+        return results;
 
     }
 

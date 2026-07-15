@@ -41,7 +41,10 @@ class HotelServiceTest {
     @InjectMocks
 
     private HotelService hotelService;
+    
+    @Mock
 
+private MetricsService metricsService;
     @Test
 
     void searchHotels_returnsAvailableHotels() {
