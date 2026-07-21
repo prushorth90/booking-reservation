@@ -1,0 +1,21 @@
+apiVersion: 1
+
+providers:
+
+  - name: ReserveNow
+
+    orgId: 1
+
+    folder: ReserveNow
+
+    type: file
+
+    disableDeletion: false
+
+    updateIntervalSeconds: 10
+
+    allowUiUpdates: true
+
+    options:
+
+      path: /var/lib/grafana/dashboards

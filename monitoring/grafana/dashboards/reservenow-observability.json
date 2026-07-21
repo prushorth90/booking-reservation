@@ -4,19 +4,19 @@
   "metadata": {
     "name": "adkjbhl",
     "namespace": "default",
-    "uid": "b031741a-c506-43ac-b37b-d474bbdf0a7a",
-    "resourceVersion": "1784093599298000",
+    "uid": "9fb0f46f-eb09-4beb-8e0b-fcdd6b1039a2",
+    "resourceVersion": "1784666923392002",
     "generation": 8,
-    "creationTimestamp": "2026-07-15T05:23:54Z",
+    "creationTimestamp": "2026-07-21T20:33:54Z",
     "labels": {
-      "grafana.app/deprecatedInternalID": "1068069787279360"
+      "grafana.app/deprecatedInternalID": "3506768807460864"
     },
     "annotations": {
-      "grafana.app/createdBy": "user:ffs4rukzqieioa",
+      "grafana.app/createdBy": "user:ffst7t55i677ke",
       "grafana.app/folder": "",
-      "grafana.app/saved-from-ui": "Grafana v13.0.1 (a100054f)",
-      "grafana.app/updatedBy": "user:ffs4rukzqieioa",
-      "grafana.app/updatedTimestamp": "2026-07-15T05:33:19Z"
+      "grafana.app/saved-from-ui": "Grafana v13.1.0 (b309c9bb3b)",
+      "grafana.app/updatedBy": "user:ffst7t55i677ke",
+      "grafana.app/updatedTimestamp": "2026-07-21T20:48:43Z"
     }
   },
   "spec": {
@@ -63,7 +63,7 @@
                       "group": "prometheus",
                       "version": "v0",
                       "datasource": {
-                        "name": "afs4rworf4rnke"
+                        "name": "dfst85hxfaozkb"
                       },
                       "spec": {
                         "editorMode": "code",
@@ -84,7 +84,7 @@
           "vizConfig": {
             "kind": "VizConfig",
             "group": "timeseries",
-            "version": "13.0.1",
+            "version": "13.1.0",
             "spec": {
               "options": {
                 "annotations": {
@@ -94,6 +94,8 @@
                 "legend": {
                   "calcs": [],
                   "displayMode": "list",
+                  "enableFacetedFilter": false,
+                  "overflow": "ellipsis",
                   "placement": "bottom",
                   "showLegend": true
                 },
@@ -181,7 +183,7 @@
                       "group": "prometheus",
                       "version": "v0",
                       "datasource": {
-                        "name": "afs4rworf4rnke"
+                        "name": "dfst85hxfaozkb"
                       },
                       "spec": {
                         "editorMode": "code",
@@ -202,7 +204,7 @@
           "vizConfig": {
             "kind": "VizConfig",
             "group": "timeseries",
-            "version": "13.0.1",
+            "version": "13.1.0",
             "spec": {
               "options": {
                 "annotations": {
@@ -212,6 +214,8 @@
                 "legend": {
                   "calcs": [],
                   "displayMode": "list",
+                  "enableFacetedFilter": false,
+                  "overflow": "ellipsis",
                   "placement": "bottom",
                   "showLegend": true
                 },
@@ -299,7 +303,7 @@
                       "group": "prometheus",
                       "version": "v0",
                       "datasource": {
-                        "name": "afs4rworf4rnke"
+                        "name": "dfst85hxfaozkb"
                       },
                       "spec": {
                         "editorMode": "code",
@@ -320,7 +324,7 @@
           "vizConfig": {
             "kind": "VizConfig",
             "group": "timeseries",
-            "version": "13.0.1",
+            "version": "13.1.0",
             "spec": {
               "options": {
                 "annotations": {
@@ -330,6 +334,8 @@
                 "legend": {
                   "calcs": [],
                   "displayMode": "list",
+                  "enableFacetedFilter": false,
+                  "overflow": "ellipsis",
                   "placement": "bottom",
                   "showLegend": true
                 },
@@ -417,7 +423,7 @@
                       "group": "prometheus",
                       "version": "v0",
                       "datasource": {
-                        "name": "afs4rworf4rnke"
+                        "name": "dfst85hxfaozkb"
                       },
                       "spec": {
                         "editorMode": "code",
@@ -438,7 +444,7 @@
           "vizConfig": {
             "kind": "VizConfig",
             "group": "timeseries",
-            "version": "13.0.1",
+            "version": "13.1.0",
             "spec": {
               "options": {
                 "annotations": {
@@ -448,6 +454,8 @@
                 "legend": {
                   "calcs": [],
                   "displayMode": "list",
+                  "enableFacetedFilter": false,
+                  "overflow": "ellipsis",
                   "placement": "bottom",
                   "showLegend": true
                 },
@@ -535,7 +543,7 @@
                       "group": "prometheus",
                       "version": "v0",
                       "datasource": {
-                        "name": "afs4rworf4rnke"
+                        "name": "dfst85hxfaozkb"
                       },
                       "spec": {
                         "editorMode": "code",
@@ -556,7 +564,7 @@
           "vizConfig": {
             "kind": "VizConfig",
             "group": "timeseries",
-            "version": "13.0.1",
+            "version": "13.1.0",
             "spec": {
               "options": {
                 "annotations": {
@@ -566,6 +574,8 @@
                 "legend": {
                   "calcs": [],
                   "displayMode": "list",
+                  "enableFacetedFilter": false,
+                  "overflow": "ellipsis",
                   "placement": "bottom",
                   "showLegend": true
                 },
@@ -653,7 +663,7 @@
                       "group": "prometheus",
                       "version": "v0",
                       "datasource": {
-                        "name": "afs4rworf4rnke"
+                        "name": "dfst85hxfaozkb"
                       },
                       "spec": {
                         "editorMode": "code",
@@ -674,7 +684,7 @@
           "vizConfig": {
             "kind": "VizConfig",
             "group": "timeseries",
-            "version": "13.0.1",
+            "version": "13.1.0",
             "spec": {
               "options": {
                 "annotations": {
@@ -684,6 +694,8 @@
                 "legend": {
                   "calcs": [],
                   "displayMode": "list",
+                  "enableFacetedFilter": false,
+                  "overflow": "ellipsis",
                   "placement": "bottom",
                   "showLegend": true
                 },
@@ -844,7 +856,7 @@
     "tags": [],
     "timeSettings": {
       "timezone": "browser",
-      "from": "now-6h",
+      "from": "now-5m",
       "to": "now",
       "autoRefresh": "",
       "autoRefreshIntervals": [
