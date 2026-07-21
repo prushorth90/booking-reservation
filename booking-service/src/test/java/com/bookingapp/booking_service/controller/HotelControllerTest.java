@@ -27,7 +27,7 @@ class HotelControllerTest {
 
     @Mock
     private HotelService hotelService;
-
+    
     @BeforeEach
     void setUp() {
         HotelController hotelController = new HotelController(hotelService);

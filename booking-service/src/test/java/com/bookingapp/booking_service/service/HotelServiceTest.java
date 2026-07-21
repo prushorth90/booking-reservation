@@ -45,6 +45,7 @@ class HotelServiceTest {
     @Mock
 
 private MetricsService metricsService;
+
     @Test
 
     void searchHotels_returnsAvailableHotels() {
