@@ -25,7 +25,7 @@ services:
       - "8080:8080"
     depends_on:
       - postgres
-
+      - otel-collector
   frontend:
     build:
       context: ./frontend
@@ -66,6 +66,46 @@ services:
       depends_on:
 
         - prometheus
+
+  otel-collector:
+
+      image: otel/opentelemetry-collector-contrib:latest
+
+      container_name: booking-otel-collector
+
+      command:
+
+        - "--config=/etc/otelcol-contrib/config.yml"
+
+      volumes:
+
+        - ./monitoring/otel-collector-config.yml:/etc/otelcol-contrib/config.yml:ro
+
+      ports:
+
+        - "4317:4317"
+
+        - "4318:4318"
+
+      depends_on:
+
+        - jaeger
+
+  jaeger:
+
+      image: jaegertracing/all-in-one:latest
+
+      container_name: booking-jaeger
+
+      environment:
+
+        COLLECTOR_OTLP_ENABLED: "true"
+
+      ports:
+
+        - "16686:16686"
+
+        - "14250:14250"
 
 volumes:
   booking_postgres_data:

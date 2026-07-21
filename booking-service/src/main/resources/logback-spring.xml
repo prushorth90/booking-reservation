@@ -17,29 +17,29 @@
 
               class="ch.qos.logback.core.ConsoleAppender">
 
-        <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+         <encoder class="net.logstash.logback.encoder.LogstashEncoder">
 
-            <customFields>
+                <customFields>
 
-                {
+                    {
 
- 
-                    "environment":"${APP_ENVIRONMENT:-local}"
+                        "environment":"${APP_ENVIRONMENT:-local}"
 
-                }
+                    }
 
-            </customFields>
+                </customFields>
 
-            <includeMdcKeyName>correlationId</includeMdcKeyName>
+                <includeMdcKeyName>correlationId</includeMdcKeyName>
 
-            <includeMdcKeyName>requestMethod</includeMdcKeyName>
+                <includeMdcKeyName>requestMethod</includeMdcKeyName>
 
-            <includeMdcKeyName>requestPath</includeMdcKeyName>
+                <includeMdcKeyName>requestPath</includeMdcKeyName>
 
-            <includeMdcKeyName>userEmail</includeMdcKeyName>
+                <includeMdcKeyName>traceId</includeMdcKeyName>
 
-        </encoder>
+                <includeMdcKeyName>spanId</includeMdcKeyName>
 
+         </encoder> 
     </appender>
 
     <root level="INFO">
