@@ -11,6 +11,42 @@ services:
     volumes:
       - booking_postgres_data:/var/lib/postgresql/data
 
+  redis:
+    image: redis:8-alpine
+    container_name: booking-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  jaeger:
+    image: jaegertracing/all-in-one:latest
+    container_name: booking-jaeger
+    environment:
+      COLLECTOR_OTLP_ENABLED: "true"
+    ports:
+      - "16686:16686"
+      - "14250:14250"
+
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib:latest
+    container_name: booking-otel-collector
+    command:
+      - "--config=/etc/otelcol-contrib/config.yml"
+    volumes:
+      - ./monitoring/otel-collector-config.yml:/etc/otelcol-contrib/config.yml:ro
+    ports:
+      - "4317:4317"
+      - "4318:4318"
+    depends_on:
+      jaeger:
+        condition: service_started
+
   backend:
     build:
       context: ./booking-service
@@ -24,8 +60,13 @@ services:
     ports:
       - "8080:8080"
     depends_on:
-      - postgres
-      - otel-collector
+      postgres:
+        condition: service_started
+      redis:
+        condition: service_healthy
+      otel-collector:
+        condition: service_started
+
   frontend:
     build:
       context: ./frontend
@@ -33,79 +74,29 @@ services:
     ports:
       - "5173:80"
     depends_on:
-      - backend
+      backend:
+        condition: service_started
 
   prometheus:
-
-      image: prom/prometheus:latest
-
-      container_name: booking-prometheus
-
-      ports:
-
-        - "9090:9090"
-
-      volumes:
-
-        - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
-
-      depends_on:
-
-        - backend
+    image: prom/prometheus:latest
+    container_name: booking-prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    depends_on:
+      backend:
+        condition: service_started
 
   grafana:
-
-      image: grafana/grafana:latest
-
-      container_name: booking-grafana
-
-      ports:
-
-        - "3000:3000"
-
-      depends_on:
-
-        - prometheus
-
-  otel-collector:
-
-      image: otel/opentelemetry-collector-contrib:latest
-
-      container_name: booking-otel-collector
-
-      command:
-
-        - "--config=/etc/otelcol-contrib/config.yml"
-
-      volumes:
-
-        - ./monitoring/otel-collector-config.yml:/etc/otelcol-contrib/config.yml:ro
-
-      ports:
-
-        - "4317:4317"
-
-        - "4318:4318"
-
-      depends_on:
-
-        - jaeger
-
-  jaeger:
-
-      image: jaegertracing/all-in-one:latest
-
-      container_name: booking-jaeger
-
-      environment:
-
-        COLLECTOR_OTLP_ENABLED: "true"
-
-      ports:
-
-        - "16686:16686"
-
-        - "14250:14250"
+    image: grafana/grafana:latest
+    container_name: booking-grafana
+    ports:
+      - "3000:3000"
+    depends_on:
+      prometheus:
+        condition: service_started
 
 volumes:
   booking_postgres_data:
+  redis_data:

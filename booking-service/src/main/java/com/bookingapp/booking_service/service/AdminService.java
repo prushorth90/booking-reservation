@@ -2,13 +2,20 @@ package com.bookingapp.booking_service.service;
 
 import java.util.List;
 
+import org.springframework.cache.annotation.CacheEvict;
+
 import org.springframework.stereotype.Service;
 
 import com.bookingapp.booking_service.dto.CreateHotelRequest;
+
 import com.bookingapp.booking_service.dto.CreateRoomRequest;
+
 import com.bookingapp.booking_service.model.Hotel;
+
 import com.bookingapp.booking_service.model.Room;
+
 import com.bookingapp.booking_service.repository.HotelRepository;
+
 import com.bookingapp.booking_service.repository.RoomRepository;
 
 @Service
@@ -39,6 +46,14 @@ public class AdminService {
 
     }
 
+    @CacheEvict(
+
+            cacheNames = "hotelSearch",
+
+            allEntries = true
+
+    )
+
     public Hotel createHotel(CreateHotelRequest request) {
 
         Hotel hotel = new Hotel(
@@ -63,11 +78,31 @@ public class AdminService {
 
     }
 
-    public Room createRoom(Long hotelId, CreateRoomRequest request) {
+    @CacheEvict(
 
-        Hotel hotel = hotelRepository.findById(hotelId)
+            cacheNames = "hotelSearch",
 
-                .orElseThrow(() -> new IllegalArgumentException("Hotel not found"));
+            allEntries = true
+
+    )
+
+    public Room createRoom(
+
+            Long hotelId,
+
+            CreateRoomRequest request
+
+    ) {
+
+        Hotel hotel = hotelRepository
+
+                .findById(hotelId)
+
+                .orElseThrow(() ->
+
+                        new IllegalArgumentException("Hotel not found")
+
+                );
 
         Room room = new Room(
 

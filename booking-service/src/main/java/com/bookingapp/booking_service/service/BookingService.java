@@ -1,16 +1,27 @@
 package com.bookingapp.booking_service.service;
+
 import java.util.List;
+
+import org.springframework.cache.annotation.CacheEvict;
 
 import org.springframework.stereotype.Service;
 
 import com.bookingapp.booking_service.dto.BookingResponse;
+
 import com.bookingapp.booking_service.dto.CreateBookingRequest;
+
 import com.bookingapp.booking_service.model.AppUser;
+
 import com.bookingapp.booking_service.model.Booking;
+
 import com.bookingapp.booking_service.model.Room;
+
 import com.bookingapp.booking_service.repository.AppUserRepository;
+
 import com.bookingapp.booking_service.repository.BookingRepository;
+
 import com.bookingapp.booking_service.repository.RoomRepository;
+
 import com.bookingapp.booking_service.security.SecurityUtils;
 
 @Service
@@ -47,43 +58,89 @@ public class BookingService {
 
     }
 
+    @CacheEvict(
+
+            cacheNames = "hotelSearch",
+
+            allEntries = true
+
+    )
+
     public BookingResponse createBooking(CreateBookingRequest request) {
 
         try {
 
-            if (!request.getCheckOutDate().isAfter(request.getCheckInDate())) {
+            if (request.getCheckInDate() == null
 
-                throw new IllegalArgumentException("Check out date must be after check in date");
+                    || request.getCheckOutDate() == null) {
+
+                throw new IllegalArgumentException(
+
+                        "Check in and check out dates are required"
+
+                );
 
             }
 
-            String currentUserEmail = SecurityUtils.getCurrentUserEmail();
+            if (!request.getCheckOutDate()
 
-            AppUser user = appUserRepository.findByEmailIgnoreCase(currentUserEmail)
+                    .isAfter(request.getCheckInDate())) {
 
-                    .orElseThrow(() -> new IllegalArgumentException("User not found"));
+                throw new IllegalArgumentException(
 
-            Room room = roomRepository.findById(request.getRoomId())
+                        "Check out date must be after check in date"
 
-                    .orElseThrow(() -> new IllegalArgumentException("Room not found"));
+                );
 
-            boolean alreadyBooked =
+            }
 
-                    bookingRepository.existsByRoomIdAndStatusAndCheckInDateLessThanAndCheckOutDateGreaterThan(
+            String currentUserEmail =
 
-                            room.getId(),
+                    SecurityUtils.getCurrentUserEmail();
 
-                            "CONFIRMED",
+            AppUser user = appUserRepository
 
-                            request.getCheckOutDate(),
+                    .findByEmailIgnoreCase(currentUserEmail)
 
-                            request.getCheckInDate()
+                    .orElseThrow(() ->
+
+                            new IllegalArgumentException("User not found")
 
                     );
 
+            Room room = roomRepository
+
+                    .findById(request.getRoomId())
+
+                    .orElseThrow(() ->
+
+                            new IllegalArgumentException("Room not found")
+
+                    );
+
+            boolean alreadyBooked =
+
+                    bookingRepository
+
+                            .existsByRoomIdAndStatusAndCheckInDateLessThanAndCheckOutDateGreaterThan(
+
+                                    room.getId(),
+
+                                    "CONFIRMED",
+
+                                    request.getCheckOutDate(),
+
+                                    request.getCheckInDate()
+
+                            );
+
             if (alreadyBooked) {
 
-                throw new IllegalArgumentException("Room is already booked for these dates");
+                throw new IllegalArgumentException(
+
+                        "Room is already booked for these dates"
+
+                );
 
             }
 
@@ -103,7 +160,9 @@ public class BookingService {
 
             );
 
-            Booking savedBooking = bookingRepository.save(booking);
+            Booking savedBooking =
+
+                    bookingRepository.save(booking);
 
             metricsService.incrementBookingCreated();
 
@@ -121,9 +180,13 @@ public class BookingService {
 
     public List<BookingResponse> getBookingsForCurrentUser() {
 
-        String currentUserEmail = SecurityUtils.getCurrentUserEmail();
+        String currentUserEmail =
 
-        return bookingRepository.findByUserEmailIgnoreCase(currentUserEmail)
+                SecurityUtils.getCurrentUserEmail();
+
+        return bookingRepository
+
+                .findByUserEmailIgnoreCase(currentUserEmail)
 
                 .stream()
 
@@ -135,7 +198,9 @@ public class BookingService {
 
     public List<BookingResponse> getAllBookingsForAdmin() {
 
-        return bookingRepository.findAll()
+        return bookingRepository
+
+                .findAll()
 
                 .stream()
 
@@ -145,33 +210,67 @@ public class BookingService {
 
     }
 
+    @CacheEvict(
+
+            cacheNames = "hotelSearch",
+
+            allEntries = true
+
+    )
+
     public BookingResponse cancelBooking(Long bookingId) {
 
-        String currentUserEmail = SecurityUtils.getCurrentUserEmail();
+        String currentUserEmail =
 
-        Booking booking = bookingRepository.findById(bookingId)
+                SecurityUtils.getCurrentUserEmail();
 
-                .orElseThrow(() -> new IllegalArgumentException("Booking not found"));
+        Booking booking = bookingRepository
 
-        boolean isOwner = booking.getUser().getEmail().equalsIgnoreCase(currentUserEmail);
+                .findById(bookingId)
 
-        boolean isAdmin = SecurityUtils.currentUserHasRole("ADMIN");
+                .orElseThrow(() ->
+
+                        new IllegalArgumentException("Booking not found")
+
+                );
+
+        boolean isOwner = booking
+
+                .getUser()
+
+                .getEmail()
+
+                .equalsIgnoreCase(currentUserEmail);
+
+        boolean isAdmin =
+
+                SecurityUtils.currentUserHasRole("ADMIN");
 
         if (!isOwner && !isAdmin) {
 
-            throw new IllegalArgumentException("You are not allowed to cancel this booking");
+            throw new IllegalArgumentException(
+
+                    "You are not allowed to cancel this booking"
+
+            );
 
         }
 
         if ("CANCELLED".equals(booking.getStatus())) {
 
-            throw new IllegalArgumentException("Booking is already cancelled");
+            throw new IllegalArgumentException(
+
+                    "Booking is already cancelled"
+
+            );
 
         }
 
         booking.setStatus("CANCELLED");
 
-        Booking savedBooking = bookingRepository.save(booking);
+        Booking savedBooking =
+
+                bookingRepository.save(booking);
 
         metricsService.incrementBookingCancelled();
 
